@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  user-api:
+    build:
+      context: ./api1
+      dockerfile: Dockerfile
+    container_name: user-api-container
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=userapi.settings
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+    volumes:
+      - ./api1:/app
+    networks:
+      - api-network
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  product-api:
+    build:
+      context: ./api2
+      dockerfile: Dockerfile
+    container_name: product-api-container
+    ports:
+      - "8001:8001"
+    environment:
+      - DJANGO_SETTINGS_MODULE=productapi.settings
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+    volumes:
+      - ./api2:/app
+    networks:
+      - api-network
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  order-api:
+    build:
+      context: ./api3
+      dockerfile: Dockerfile
+    container_name: order-api-container
+    ports:
+      - "8002:8002"
+    environment:
+      - DJANGO_SETTINGS_MODULE=orderapi.settings
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+    volumes:
+      - ./api3:/app
+    networks:
+      - api-network
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  payment-api:
+    build:
+      context: ./api4
+      dockerfile: Dockerfile
+    container_name: payment-api-container
+    ports:
+      - "8003:8003"
+    environment:
+      - DJANGO_SETTINGS_MODULE=paymentapi.settings
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+    volumes:
+      - ./api4:/app
+    networks:
+      - api-network
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb-container
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password123
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - api-network
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  api-network:
+    driver: bridge
