@@ -64,7 +64,7 @@ WSGI_APPLICATION = 'paymentapi.wsgi.application'
 import mongoengine
 mongoengine.connect(
     db='paymentapi_db',
-    host=f"mongodb://admin:password123@{os.getenv('MONGODB_HOST', 'mongodb')}:{os.getenv('MONGODB_PORT', '27017')}/"
+    host=os.getenv('MONGODB_URI', 'mongodb+srv://quandeptrai5122004_db_user:9ITqxCZA59oLgLRd@cluster0.w4cqlgx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 )
 
 # Keep Django's default database for admin and auth

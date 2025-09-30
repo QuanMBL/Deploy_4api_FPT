@@ -7,17 +7,14 @@ services:
       dockerfile: Dockerfile
     container_name: user-api-container
     ports:
-      - "8000:8000"
+      - "6000:6000"
     environment:
       - DJANGO_SETTINGS_MODULE=userapi.settings
-      - MONGODB_HOST=mongodb
-      - MONGODB_PORT=27017
+      - MONGODB_URI=mongodb+srv://quandeptrai5122004_db_user:9ITqxCZA59oLgLRd@cluster0.w4cqlgx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
     volumes:
       - ./api1:/app
     networks:
       - api-network
-    depends_on:
-      - mongodb
     restart: unless-stopped
 
   product-api:
@@ -26,17 +23,14 @@ services:
       dockerfile: Dockerfile
     container_name: product-api-container
     ports:
-      - "8001:8001"
+      - "6001:6001"
     environment:
       - DJANGO_SETTINGS_MODULE=productapi.settings
-      - MONGODB_HOST=mongodb
-      - MONGODB_PORT=27017
+      - MONGODB_URI=mongodb+srv://quandeptrai5122004_db_user:9ITqxCZA59oLgLRd@cluster0.w4cqlgx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
     volumes:
       - ./api2:/app
     networks:
       - api-network
-    depends_on:
-      - mongodb
     restart: unless-stopped
 
   order-api:
@@ -45,17 +39,14 @@ services:
       dockerfile: Dockerfile
     container_name: order-api-container
     ports:
-      - "8002:8002"
+      - "6002:6002"
     environment:
       - DJANGO_SETTINGS_MODULE=orderapi.settings
-      - MONGODB_HOST=mongodb
-      - MONGODB_PORT=27017
+      - MONGODB_URI=mongodb+srv://quandeptrai5122004_db_user:9ITqxCZA59oLgLRd@cluster0.w4cqlgx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
     volumes:
       - ./api3:/app
     networks:
       - api-network
-    depends_on:
-      - mongodb
     restart: unless-stopped
 
   payment-api:
@@ -64,32 +55,17 @@ services:
       dockerfile: Dockerfile
     container_name: payment-api-container
     ports:
-      - "8003:8003"
+      - "6003:6003"
     environment:
       - DJANGO_SETTINGS_MODULE=paymentapi.settings
-      - MONGODB_HOST=mongodb
-      - MONGODB_PORT=27017
+      - MONGODB_URI=mongodb+srv://quandeptrai5122004_db_user:9ITqxCZA59oLgLRd@cluster0.w4cqlgx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
     volumes:
       - ./api4:/app
     networks:
       - api-network
-    depends_on:
-      - mongodb
     restart: unless-stopped
 
-  mongodb:
-    image: mongo:7.0
-    container_name: mongodb-container
-    ports:
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=password123
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - api-network
-    restart: unless-stopped
+# MongoDB Atlas is used instead of local MongoDB
 
   prometheus:
     image: prom/prometheus:latest
@@ -178,8 +154,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  mongodb_data:
-    driver: local
   prometheus_data:
     driver: local
   grafana_data:

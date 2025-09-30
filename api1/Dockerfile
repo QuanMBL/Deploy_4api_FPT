@@ -28,10 +28,10 @@ COPY . .
 RUN chown -R appuser:appuser /app
 USER appuser
 
-EXPOSE 8000
+EXPOSE 6000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/metrics || exit 1
+    CMD curl -f http://localhost:6000/metrics || exit 1
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "30", "userapi.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:6000", "--workers", "2", "--timeout", "30", "userapi.wsgi:application"]

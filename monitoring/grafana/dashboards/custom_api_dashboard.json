@@ -48,7 +48,7 @@
       }
     ]
   },
-  "description": "Custom API Dashboard for 4 API Services - User, Product, Order, Payment APIs with REAL-TIME metrics data from actual requests",
+  "description": "Custom API Dashboard for 4 API Services - User, Product, Order, Payment APIs with REAL-TIME metrics data from actual requests - UPDATED FOR REAL DATA",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -126,7 +126,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "",
+          "legendFormat": "Active APIs",
           "metric": "",
           "refId": "A",
           "step": 1800
@@ -215,7 +215,7 @@
           "expr": "avg(rate(process_cpu_seconds_total{job=~\"user-api|product-api|order-api|payment-api\"}[5m])) * 100",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "",
+          "legendFormat": "CPU Usage %",
           "metric": "",
           "refId": "A",
           "step": 2
@@ -306,7 +306,7 @@
           "expr": "sum(process_resident_memory_bytes{job=~\"user-api|product-api|order-api|payment-api\"})",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "",
+          "legendFormat": "Total Memory",
           "metric": "",
           "refId": "A",
           "step": 2
@@ -377,7 +377,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{job}}",
+          "legendFormat": "{{job}} - Requests/sec",
           "metric": "A",
           "refId": "A",
           "step": 240,
@@ -1247,7 +1247,7 @@
       }
     }
   ],
-  "refresh": "5s",
+  "refresh": "10s",
   "schemaVersion": 21,
   "style": "dark",
   "tags": [

@@ -28,10 +28,10 @@ COPY . .
 RUN chown -R appuser:appuser /app
 USER appuser
 
-EXPOSE 8001
+EXPOSE 6001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8001/metrics || exit 1
+    CMD curl -f http://localhost:6001/metrics || exit 1
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:6001"]

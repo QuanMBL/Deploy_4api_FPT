@@ -13,24 +13,24 @@ scrape_configs:
 
   - job_name: 'user-api'
     static_configs:
-      - targets: ['user-api:8000']
+      - targets: ['user-api:6000']
     metrics_path: '/metrics'
     scrape_interval: 5s
 
   - job_name: 'product-api'
     static_configs:
-      - targets: ['product-api:8001']
+      - targets: ['product-api:6001']
     metrics_path: '/metrics'
     scrape_interval: 5s
 
   - job_name: 'order-api'
     static_configs:
-      - targets: ['order-api:8002']
+      - targets: ['order-api:6002']
     metrics_path: '/metrics'
     scrape_interval: 5s
 
   - job_name: 'payment-api'
     static_configs:
-      - targets: ['payment-api:8003']
+      - targets: ['payment-api:6003']
     metrics_path: '/metrics'
     scrape_interval: 5s

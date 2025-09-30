@@ -60,11 +60,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'productapi.wsgi.application'
 
 # MongoDB configuration using mongoengine
-# import mongoengine
-# mongoengine.connect(
-#     db='productapi_db',
-#     host=f"mongodb://admin:password123@{os.getenv('MONGODB_HOST', 'mongodb')}:{os.getenv('MONGODB_PORT', '27017')}/"
-# )
+import mongoengine
+mongoengine.connect(
+    db='productapi_db',
+    host=os.getenv('MONGODB_URI', 'mongodb+srv://quandeptrai5122004_db_user:9ITqxCZA59oLgLRd@cluster0.w4cqlgx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+)
 
 # Keep Django's default database for admin and auth
 DATABASES = {
