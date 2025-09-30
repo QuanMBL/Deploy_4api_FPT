@@ -83,11 +83,69 @@ docker-compose logs -f
 
 ## 🌐 Truy cập các services
 
+### URLs gốc (có thể bị firewall block):
 - **User API**: http://localhost:8000
 - **Product API**: http://localhost:8001
 - **Order API**: http://localhost:8002
 - **Payment API**: http://localhost:8003
 - **MongoDB**: localhost:27017
+
+### URLs với Port Forwarding (Khuyến nghị):
+- **User API**: http://localhost:8081/api/users/
+- **Product API**: http://localhost:8080/api/products/
+- **Order API**: http://localhost:8082/api/orders/
+- **Payment API**: http://localhost:8083/api/payments/
+
+## 🧪 Test API với Postman
+
+### Cấu hình Postman:
+- **Headers**: `Content-Type: application/json`
+- **Method**: GET hoặc POST
+- **URLs**: Sử dụng URLs với Port Forwarding ở trên
+
+### POST Request Bodies:
+
+#### **Product API POST:**
+```json
+{
+    "name": "iPhone 15 Pro",
+    "price": "999.99",
+    "description": "Latest iPhone with advanced features",
+    "stock_quantity": 50,
+    "mode": "active"
+}
+```
+
+#### **User API POST:**
+```json
+{
+    "name": "Nguyen Van A",
+    "email": "nguyenvana@example.com"
+}
+```
+
+#### **Order API POST:**
+```json
+{
+    "order_number": "ORD-001-2024",
+    "customer_name": "Nguyen Van A",
+    "customer_email": "nguyenvana@example.com",
+    "total_amount": "1999.98",
+    "status": "pending"
+}
+```
+
+#### **Payment API POST:**
+```json
+{
+    "payment_id": "PAY-001-2024",
+    "order_id": "ORD-001-2024",
+    "amount": "1999.98",
+    "payment_method": "credit_card",
+    "status": "pending",
+    "transaction_id": "TXN-123456789"
+}
+```
 
 ## 📊 Monitoring và Health Checks
 
@@ -122,6 +180,18 @@ docker-compose logs -f [service_name]
 
 # Vào container
 docker-compose exec [service_name] bash
+```
+
+### Script Test API Tự động
+```powershell
+# Chạy script test API (Windows PowerShell)
+.\test_api_final.ps1
+
+# Hoặc tạo port forwarding và test
+docker run -d -p 8080:8001 --network project_api_test_1_api-network --name test-product-api project_api_test_1-product-api
+docker run -d -p 8081:8000 --network project_api_test_1_api-network --name test-user-api project_api_test_1-user-api
+docker run -d -p 8082:8002 --network project_api_test_1_api-network --name test-order-api project_api_test_1-order-api
+docker run -d -p 8083:8003 --network project_api_test_1_api-network --name test-payment-api project_api_test_1-payment-api
 ```
 
 ### MongoDB Commands
@@ -200,6 +270,60 @@ docker-compose logs [service_name]
 # Rebuild container
 docker-compose build [service_name]
 ```
+
+4. **🚨 VẤN ĐỀ FIREWALL - API KHÔNG THỂ TRUY CẬP TỪ BÊN NGOÀI**
+
+**Triệu chứng:**
+- Containers chạy bình thường (`docker-compose ps` hiển thị Up)
+- Không thể truy cập API từ browser/Postman
+- Lỗi "ERR_EMPTY_RESPONSE" hoặc "socket hang up"
+- PowerShell/curl bị block
+
+**Nguyên nhân:**
+- Windows Firewall đang block Docker containers
+- Docker Desktop Backend có firewall rules BLOCK inbound connections
+- Cần quyền admin để tạo firewall rules mới
+
+**Giải pháp:**
+
+**Cách 1: Sử dụng Port Forwarding (Khuyến nghị)**
+```bash
+# Tạo port forwarding với cùng network
+docker run -d -p 8080:8001 --network project_api_test_1_api-network --name test-product-api project_api_test_1-product-api
+docker run -d -p 8081:8000 --network project_api_test_1_api-network --name test-user-api project_api_test_1-user-api
+docker run -d -p 8082:8002 --network project_api_test_1_api-network --name test-order-api project_api_test_1-order-api
+docker run -d -p 8083:8003 --network project_api_test_1_api-network --name test-payment-api project_api_test_1-payment-api
+```
+
+**URLs mới để test:**
+- Product API: `http://localhost:8080/api/products/`
+- User API: `http://localhost:8081/api/users/`
+- Order API: `http://localhost:8082/api/orders/`
+- Payment API: `http://localhost:8083/api/payments/`
+
+**Cách 2: Tạo Firewall Rules (Cần quyền admin)**
+```powershell
+# Chạy PowerShell as Administrator
+New-NetFirewallRule -DisplayName "Docker API Ports" -Direction Inbound -Protocol TCP -LocalPort 8000,8001,8002,8003 -Action Allow
+```
+
+**Cách 3: Sử dụng Browser thay vì Postman**
+- Mở browser và truy cập trực tiếp các URLs
+- Browser có thể bypass một số firewall restrictions
+
+**Kiểm tra Firewall Rules:**
+```powershell
+# Xem firewall rules hiện tại
+Get-NetFirewallRule | Where-Object {$_.DisplayName -like "*Docker*"}
+
+# Kiểm tra port có đang mở không
+Test-NetConnection -ComputerName localhost -Port 8001
+```
+
+**Lưu ý quan trọng:**
+- Vấn đề này chỉ xảy ra trên Windows với Docker Desktop
+- Linux/macOS thường không gặp vấn đề này
+- Port forwarding là giải pháp an toàn nhất
 
 ## 📚 Tài liệu tham khảo
 

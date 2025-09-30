@@ -4,14 +4,16 @@ import os
 from django.utils.deprecation import MiddlewareMixin
 from django.conf import settings
 
-# Global metrics storage
+# Global metrics storage - CHỈ LƯU DỮ LIỆU THẬT
 _metrics_data = {
     'http_requests_total': {},
     'http_request_duration_seconds': {},
     'process_resident_memory_bytes': 0,
     'process_cpu_seconds_total': 0.0,
     'process_open_fds': 0,
-    'up': 1
+    'up': 1,
+    'job': 'product-api',  # Job label for Prometheus
+    'last_reset': time.time()  # Thời gian reset cuối cùng
 }
 
 class MetricsMiddleware(MiddlewareMixin):
@@ -60,19 +62,41 @@ class MetricsMiddleware(MiddlewareMixin):
         return response
 
 def _update_system_metrics():
-    """Update system metrics with real data"""
+    """Update system metrics with REAL data only - NO FALLBACK VALUES"""
     try:
         process = psutil.Process()
         _metrics_data['process_resident_memory_bytes'] = process.memory_info().rss
         _metrics_data['process_cpu_seconds_total'] = process.cpu_times().user + process.cpu_times().system
         _metrics_data['process_open_fds'] = process.num_fds() if hasattr(process, 'num_fds') else len(process.open_files())
     except (psutil.NoSuchProcess, psutil.AccessDenied, AttributeError):
-        # Fallback values if psutil fails
-        _metrics_data['process_resident_memory_bytes'] = 45000000
-        _metrics_data['process_cpu_seconds_total'] = 0.0
-        _metrics_data['process_open_fds'] = 8
+        # KHÔNG SỬ DỤNG FALLBACK VALUES - CHỈ DỮ LIỆU THẬT
+        # Nếu không lấy được dữ liệu thật, giữ nguyên giá trị cũ
+        pass
+
+def reset_metrics():
+    """Reset metrics để chỉ hiển thị dữ liệu thật"""
+    global _metrics_data
+    _metrics_data['http_requests_total'] = {}
+    _metrics_data['http_request_duration_seconds'] = {
+        'duration_sum': 0.0,
+        'duration_count': 0,
+        'buckets': {'0.1': 0, '0.5': 0, '1.0': 0, '2.0': 0, '+Inf': 0}
+    }
+    _metrics_data['last_reset'] = time.time()
 
 def get_metrics_data():
-    """Get current metrics data"""
+    """Get current metrics data - CHỈ DỮ LIỆU THẬT"""
     _update_system_metrics()
-    return _metrics_data.copy()
+    
+    # Chỉ trả về dữ liệu thật, không có dữ liệu random
+    real_data = {
+        'http_requests_total': _metrics_data['http_requests_total'].copy(),
+        'http_request_duration_seconds': _metrics_data['http_request_duration_seconds'].copy(),
+        'process_resident_memory_bytes': _metrics_data['process_resident_memory_bytes'],
+        'process_cpu_seconds_total': _metrics_data['process_cpu_seconds_total'],
+        'process_open_fds': _metrics_data['process_open_fds'],
+        'up': _metrics_data['up'],
+        'job': _metrics_data['job']
+    }
+    
+    return real_data

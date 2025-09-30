@@ -48,7 +48,7 @@
       }
     ]
   },
-  "description": "Custom API Dashboard for 4 API Services - User, Product, Order, Payment APIs with real metrics data",
+  "description": "Custom API Dashboard for 4 API Services - User, Product, Order, Payment APIs with REAL-TIME metrics data from actual requests",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -133,7 +133,7 @@
         }
       ],
       "thresholds": "",
-      "title": "📊 Tổng số Services đang hoạt động",
+      "title": "📊 Tổng số Services đang hoạt động (Real-time)",
       "type": "singlestat",
       "valueFontSize": "120%",
       "valueMaps": [
@@ -224,7 +224,7 @@
       "thresholds": "",
       "timeFrom": "1m",
       "timeShift": null,
-      "title": "Active APIs - 🖥️ CPU Usage trung bình",
+      "title": "Active APIs - 🖥️ CPU Usage trung bình (Real-time)",
       "type": "singlestat",
       "valueFontSize": "120%",
       "valueMaps": [
@@ -315,7 +315,7 @@
       "thresholds": "5,10",
       "timeFrom": "1m",
       "timeShift": null,
-      "title": "Error Rate - 💾 Tổng Memory Usage",
+      "title": "💾 Tổng Memory Usage (Real-time)",
       "type": "singlestat",
       "valueFontSize": "120%",
       "valueMaps": [
@@ -373,7 +373,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(django_http_requests_total[1m])) by (job)",
+          "expr": "sum(rate(django_http_requests_total{job=~\"user-api|product-api|order-api|payment-api\"}[1m])) by (job)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -388,7 +388,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Requests per Second",
+      "title": "Requests per Second (Real-time)",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -473,7 +473,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(django_http_requests_total{status=~\"2..\"}[5m])) by (job)",
+          "expr": "sum(rate(django_http_requests_total{job=~\"user-api|product-api|order-api|payment-api\",status=~\"2..\"}[5m])) by (job)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -485,7 +485,7 @@
           "target": ""
         },
         {
-          "expr": "sum(rate(django_http_requests_total{status=~\"4..|5..\"}[5m])) by (job)",
+          "expr": "sum(rate(django_http_requests_total{job=~\"user-api|product-api|order-api|payment-api\",status=~\"4..|5..\"}[5m])) by (job)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -501,7 +501,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Success vs Error Rate",
+      "title": "Success vs Error Rate (Real-time)",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -603,7 +603,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Memory Usage by API",
+      "title": "Memory Usage by API (Real-time)",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -687,7 +687,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(django_http_requests_total{method=\"GET\"}[5m])) by (job)",
+          "expr": "sum(rate(django_http_requests_total{job=~\"user-api|product-api|order-api|payment-api\",method=\"GET\"}[5m])) by (job)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{job}} - GET",
@@ -695,7 +695,7 @@
           "step": 240
         },
         {
-          "expr": "sum(rate(django_http_requests_total{method=\"POST\"}[5m])) by (job)",
+          "expr": "sum(rate(django_http_requests_total{job=~\"user-api|product-api|order-api|payment-api\",method=\"POST\"}[5m])) by (job)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -708,7 +708,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "HTTP Methods by API",
+      "title": "HTTP Methods by API (Real-time)",
       "tooltip": {
         "msResolution": true,
         "shared": true,
@@ -794,7 +794,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(django_http_requests_total) by (status)",
+          "expr": "sum(django_http_requests_total{job=~\"user-api|product-api|order-api|payment-api\"}) by (status)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -808,7 +808,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "HTTP Status Codes",
+      "title": "HTTP Status Codes (Real-time)",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -906,7 +906,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Response Time by API",
+      "title": "Response Time by API (Real-time)",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -999,7 +999,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(django_http_requests_total{status=~\"4..\"}[5m])) by (job)",
+          "expr": "sum(rate(django_http_requests_total{job=~\"user-api|product-api|order-api|payment-api\",status=~\"4..\"}[5m])) by (job)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1011,7 +1011,7 @@
           "target": ""
         },
         {
-          "expr": "sum(rate(django_http_requests_total{status=~\"5..\"}[5m])) by (job)",
+          "expr": "sum(rate(django_http_requests_total{job=~\"user-api|product-api|order-api|payment-api\",status=~\"5..\"}[5m])) by (job)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1024,7 +1024,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "4xx vs 5xx Errors",
+      "title": "4xx vs 5xx Errors (Real-time)",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -1105,7 +1105,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "topk(5, sum(rate(django_http_requests_total[5m])) by (job))",
+          "expr": "topk(5, sum(rate(django_http_requests_total{job=~\"user-api|product-api|order-api|payment-api\"}[5m])) by (job))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1119,7 +1119,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Top APIs by Request Rate",
+      "title": "Top APIs by Request Rate (Real-time)",
       "tooltip": {
         "msResolution": true,
         "shared": true,
@@ -1209,7 +1209,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "CPU Usage by API",
+      "title": "CPU Usage by API (Real-time)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1247,7 +1247,7 @@
       }
     }
   ],
-  "refresh": "30s",
+  "refresh": "5s",
   "schemaVersion": 21,
   "style": "dark",
   "tags": [

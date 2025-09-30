@@ -4,10 +4,11 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies for psutil compilation
+# Install system dependencies for psutil compilation and health check
 RUN apt-get update && apt-get install -y \
     gcc \
     python3-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
@@ -31,6 +32,6 @@ EXPOSE 8003
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8003/ || exit 1
+    CMD curl -f http://localhost:8003/metrics || exit 1
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8003", "--workers", "2", "--timeout", "30", "paymentapi.wsgi:application"]

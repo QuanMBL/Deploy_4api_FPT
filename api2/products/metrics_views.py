@@ -13,7 +13,7 @@ def metrics_view(request):
     for key, count in data['http_requests_total'].items():
         if '_' in key:
             method, status = key.split('_', 1)
-            metrics_data.append(f'django_http_requests_total{{method="{method}",status="{status}"}} {count}')
+            metrics_data.append(f'django_http_requests_total{{job="{data["job"]}",method="{method}",status="{status}"}} {count}')
     
     # HTTP Request Duration - Dynamic data
     metrics_data.append('# HELP django_http_request_duration_seconds HTTP request duration')
@@ -29,19 +29,19 @@ def metrics_view(request):
     # Process Metrics - Dynamic data
     metrics_data.append('# HELP process_resident_memory_bytes Resident memory size in bytes')
     metrics_data.append('# TYPE process_resident_memory_bytes gauge')
-    metrics_data.append(f'process_resident_memory_bytes {data["process_resident_memory_bytes"]}')
+    metrics_data.append(f'process_resident_memory_bytes{{job="{data["job"]}"}} {data["process_resident_memory_bytes"]}')
     
     metrics_data.append('# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds')
     metrics_data.append('# TYPE process_cpu_seconds_total counter')
-    metrics_data.append(f'process_cpu_seconds_total {data["process_cpu_seconds_total"]}')
+    metrics_data.append(f'process_cpu_seconds_total{{job="{data["job"]}"}} {data["process_cpu_seconds_total"]}')
     
     metrics_data.append('# HELP process_open_fds Number of open file descriptors')
     metrics_data.append('# TYPE process_open_fds gauge')
-    metrics_data.append(f'process_open_fds {data["process_open_fds"]}')
+    metrics_data.append(f'process_open_fds{{job="{data["job"]}"}} {data["process_open_fds"]}')
     
     # System Metrics
     metrics_data.append('# HELP up Whether the service is up')
     metrics_data.append('# TYPE up gauge')
-    metrics_data.append(f'up {data["up"]}')
+    metrics_data.append(f'up{{job="{data["job"]}"}} {data["up"]}')
     
     return HttpResponse('\n'.join(metrics_data), content_type='text/plain')
